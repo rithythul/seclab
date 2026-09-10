@@ -1,0 +1,41 @@
+# Vulnerable web-app victims for the security lab.
+# Published ONLY on 192.168.122.1 (the libvirt virbr0 gateway), so they are
+# reachable from the host and from lab VMs on the "default" NAT network,
+# but NOT from wlan0 or tailscale0. Never change the bind IP to 0.0.0.0.
+name: seclab-victims
+
+services:
+  dvwa:
+    image: vulnerables/web-dvwa:latest
+    container_name: seclab-dvwa
+    restart: unless-stopped
+    ports:
+      - "192.168.122.1:8081:80"
+    networks: [victimnet]
+
+  juiceshop:
+    image: bkimminich/juice-shop:latest
+    container_name: seclab-juiceshop
+    restart: unless-stopped
+    ports:
+      - "192.168.122.1:3000:3000"
+    networks: [victimnet]
+
+  webgoat:
+    image: webgoat/webgoat:latest
+    container_name: seclab-webgoat
+    restart: unless-stopped
+    environment:
+      - WEBGOAT_HOST=0.0.0.0
+      - WEBGOAT_PORT=8080
+      - WEBWOLF_HOST=0.0.0.0
+      - WEBWOLF_PORT=9090
+    ports:
+      - "192.168.122.1:8080:8080"
+      - "192.168.122.1:9090:9090"
+    networks: [victimnet]
+
+networks:
+  victimnet:
+    name: seclab-victimnet
+    driver: bridge

@@ -1,0 +1,15 @@
+# Large binary artifacts and runtime state — never commit these.
+iso/
+vms/
+loot/
+shared/
+docs/autobuild.log
+
+# Belt-and-suspenders: VM/image blobs wherever they land.
+*.iso
+*.qcow2
+*.qcow2.*
+*.vmdk
+*.zip
+*.raw
+*.nvram
